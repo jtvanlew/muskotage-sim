@@ -1,141 +1,24 @@
 mission_dict = {
-			  "10": {
-			    "1": [
-			      3, 
-			      1
-			    ], 
-			    "3": [
-			      4, 
-			      1
-			    ], 
-			    "2": [
-			      4, 
-			      1
-			    ], 
-			    "5": [
-			      5, 
-			      1
-			    ], 
-			    "4": [
-			      5, 
-			      2
-			    ]
+			  "10": {"1": [  3,   1], "3": [  4,   1], "2": [  4,   1], "5": [  5,   1], "4": [  5,   2]
 			  }, 
-			  "5": {
-			    "1": [
-			      2, 
-			      1
-			    ], 
-			    "3": [
-			      2, 
-			      1
-			    ], 
-			    "2": [
-			      3, 
-			      1
-			    ], 
-			    "5": [
-			      3, 
-			      1
-			    ], 
-			    "4": [
-			      3, 
-			      1
-			    ]
+			  "5": {"1": [  2,   1], "3": [  2,   1], "2": [  3,   1], "5": [  3,   1], "4": [  3,   1]
 			  }, 
-			  "7": {
-			    "1": [
-			      2, 
-			      1
-			    ], 
-			    "3": [
-			      3, 
-			      1
-			    ], 
-			    "2": [
-			      3, 
-			      1
-			    ], 
-			    "5": [
-			      4, 
-			      1
-			    ], 
-			    "4": [
-			      4, 
-			      2
-			    ]
+			  "7": {"1": [  2,   1], "3": [  3,   1], "2": [  3,   1], "5": [  4,   1], "4": [  4,   2]
 			  }, 
-			  "6": {
-			    "1": [
-			      2, 
-			      1
-			    ], 
-			    "3": [
-			      4, 
-			      1
-			    ], 
-			    "2": [
-			      3, 
-			      1
-			    ], 
-			    "5": [
-			      4, 
-			      1
-			    ], 
-			    "4": [
-			      3, 
-			      1
-			    ]
+			  "6": {"1": [  2,   1], "3": [  4,   1], "2": [  3,   1], "5": [  4,   1], "4": [  3,   1]
 			  }, 
-			  "9": {
-			    "1": [
-			      3, 
-			      1
-			    ], 
-			    "3": [
-			      4, 
-			      1
-			    ], 
-			    "2": [
-			      4, 
-			      1
-			    ], 
-			    "5": [
-			      5, 
-			      1
-			    ], 
-			    "4": [
-			      5, 
-			      2
-			    ]
+			  "9": {"1": [  3,   1], "3": [  4,   1], "2": [  4,   1], "5": [  5,   1], "4": [  5,   2]
 			  }, 
-			  "8": {
-			    "1": [
-			      3, 
-			      1
-			    ], 
-			    "3": [
-			      4, 
-			      1
-			    ], 
-			    "2": [
-			      4, 
-			      1
-			    ], 
-			    "5": [
-			      5, 
-			      1
-			    ], 
-			    "4": [
-			      5, 
-			      2
-			    ]
+			  "8": {"1": [  3,   1], "3": [  4,   1], "2": [  4,   1], "5": [  5,   1], "4": [  5,   2]
 			  }
 			}
 
 
 
-def muskotage(N, M):
+def muskotage(N, paranoia_level):
+	# N 			 = number of players
+	# paranoia_level = equals array of paranoia level for each player
+
 	try:
 		import random
 	except:
@@ -147,19 +30,6 @@ def muskotage(N, M):
 
 	outbound_texts = 0
 	incoming_texts = 0
-
-	# N = number of players
-	# M equals array of paranoia level for each player
-
-	# 1) all texted assignments
-	# 2) all texted leader order
-	# 3) leader texted to choose mission members
-	# 4) all but leader vote on mission members
-	# 5)  success -> mission members vote to aid/sab mission
-	#      fail          -> goes back to (3) with next leader
-	# 6) all texted new scores, goes back to (3) with next leader
-	# 7) everyone texted who won game
-	# * based on length, some of these could require 2 texts! 
 
 
 	# 1 - everyone texted assignment
@@ -195,7 +65,7 @@ def muskotage(N, M):
 
 			# have a function to accept / reject team based on paranoia of players
 			# paranoia_function = 0 # team always accepted
-			paranoia_function = M # team always rejected
+			paranoia_function = paranoia_level # team always rejected
 			if paranoia_function == 1:
 				mission_accept = False
 			elif paranoia_function == 0:
@@ -245,15 +115,51 @@ def muskotage(N, M):
 
 
 import numpy as np
-K = 100000
-total_outgoing = np.zeros(K)
+K = 10000
+players = range(5,11)
 
-for j in range(5,11):
+total_outgoing = np.zeros([len(players),2,K])
+total_outgoing_average = np.zeros([len(players),2])
+total_outgoing_max = np.zeros([len(players),2])
+total_outgoing_min = np.zeros([len(players),2])
+
+# paranoia level 0
+for j in players:
     for i in range(0, K):
-   	total_outgoing[i], incoming_temp = muskotage(j, 1)
-    print j, np.mean(total_outgoing)
+   	total_outgoing[j-5,0,i], incoming_temp = muskotage(j, 0)
+   	total_outgoing[j-5,1,i], incoming_temp = muskotage(j, 1)
+    total_outgoing_average[j-5,0] = np.mean(total_outgoing[j-5,0,:])
+    total_outgoing_max[j-5,0] = np.amax(total_outgoing[j-5,0,:])
+    total_outgoing_min[j-5,0] = np.amin(total_outgoing[j-5,0,:])
+    
+    total_outgoing_average[j-5,1] = np.mean(total_outgoing[j-5,1,:]) 
+    total_outgoing_max[j-5,1] = np.amax(total_outgoing[j-5,1,:])
+    total_outgoing_min[j-5,1] = np.amin(total_outgoing[j-5,1,:])
 
 
-#import matplotlib.pyplot as plt
-#plt.plot(total_outgoing)
-#plt.show()
+import matplotlib.pyplot as plt
+
+# plot it!
+fig, ax = plt.subplots(1)
+ax.plot(players,total_outgoing_average[:,0],\
+        label='team always accepted', color='c')
+ax.plot(players,total_outgoing_average[:,1],\
+        label='team always rejected', color='k')
+ax.fill_between(players,\
+                total_outgoing_max[:,0],\
+                total_outgoing_min[:,0],\
+                facecolor='c', alpha=0.3)
+ax.fill_between(players,\
+                total_outgoing_max[:,1],\
+                total_outgoing_min[:,1],\
+                facecolor='k', alpha=0.3)
+ax.set_title('Results of %s trials'%(K))
+ax.legend(loc='best')
+ax.set_xlabel("Number of players in game")
+ax.set_ylabel("Average number of text messages sent in the game")
+ax.grid()
+
+
+
+
+plt.show()
