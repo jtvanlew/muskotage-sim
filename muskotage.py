@@ -141,9 +141,6 @@ def muskotage(N, M):
 	except:
 		print "error no random module"
 		return None
-	if len(M) != N:
-		print "Error: length of paranoia array is not equal to the number of players"
-		return None
 	if N < 5 or N > 10:
 		print "Error: number of players must be between 5 and 10"
 		return None
@@ -197,12 +194,14 @@ def muskotage(N, M):
 
 
 			# have a function to accept / reject team based on paranoia of players
-			paranoia_function = 0.5 # right now leave it as always accepted
-			if paranoia_function > 1:
+			# paranoia_function = 0 # team always accepted
+			paranoia_function = M # team always rejected
+			if paranoia_function == 1:
 				mission_accept = False
-			else:
+			elif paranoia_function == 0:
 				mission_accept = True
-
+                        else:
+                            print "choose paranoia level of 0 or 1"
 
 			# kick out of the voting after the fifth 
 			mission_votes += 1
@@ -216,6 +215,7 @@ def muskotage(N, M):
 		# print "number of mission members: %s, on mission number: %s"%(mission_member_size, mission_number)
 		# 5b - mission members only respond
 		incoming_texts += mission_member_size
+
 
 		# just do random success or failure because who cares for this
 		success = bool(random.getrandbits(1))
@@ -245,11 +245,15 @@ def muskotage(N, M):
 
 
 import numpy as np
-total_outgoing = []
-for i in range(0,1000):
-	outgoing_temp, incoming_temp = muskotage(5, [0, 1, 1, 1, 0])
-	total_outgoing = np.append(total_outgoing, outgoing_temp)
+K = 100000
+total_outgoing = np.zeros(K)
 
-import matplotlib as plt
+for j in range(5,11):
+    for i in range(0, K):
+   	total_outgoing[i], incoming_temp = muskotage(j, 1)
+    print j, np.mean(total_outgoing)
 
-plt.plot(total_outgoing)
+
+#import matplotlib.pyplot as plt
+#plt.plot(total_outgoing)
+#plt.show()
