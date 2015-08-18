@@ -36,48 +36,13 @@ def muskotage(N, paranoia_level):
 	outbound_texts += N
 
 
-	# 2 - everyone texted leader order
-	outbound_texts += N
-
 
 	score1 = 0
 	score2 = 0
 	mission_number = 1
 	# loop until a team wins
 	while score1 < 3 and score2 < 3:
-		# loop mission members until accepted
-		mission_accept = False
-		mission_votes  = 0
-		while mission_accept == False:
-
-
-			# 3a - leader texted to choose mission members
-			outbound_texts += 1
-			# 3b - leader responds
-			incoming_texts += 1
-
-
-			# 4a - All but leader texted to vote on members
-			outbound_texts += N-1
-			# 4b - All but leader respond
-			incoming_texts += N-1
-
-
-			# have a function to accept / reject team based on paranoia of players
-			# paranoia_function = 0 # team always accepted
-			paranoia_function = paranoia_level # team always rejected
-			if paranoia_function == 1:
-				mission_accept = False
-			elif paranoia_function == 0:
-				mission_accept = True
-                        else:
-                            print "choose paranoia level of 0 or 1"
-
-			# kick out of the voting after the fifth 
-			mission_votes += 1
-			if mission_votes == 4:
-				mission_accept = True
-
+		
 
 		# 5a - mission members only vote
 		mission_member_size = mission_dict[str(N)][str(mission_number)][0]
@@ -96,12 +61,7 @@ def muskotage(N, paranoia_level):
 		mission_number += 1
 
 
-		# 6 - everyone texted success/failure of mission
-		outbound_texts += N
 
-
-	# 7 - everyone is texted winners of the game
-	outbound_texts += N
 	
 	verbose = False
 	if verbose == True:
@@ -115,7 +75,7 @@ def muskotage(N, paranoia_level):
 
 
 import numpy as np
-K = 100
+K = 10000
 players = range(5,11)
 
 total_outgoing = np.zeros([len(players),2,K])
